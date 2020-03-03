@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 
 const int size = 500;
-const int dimensions = 2;
 
 int main()
 {
