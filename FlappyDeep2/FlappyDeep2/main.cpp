@@ -1,10 +1,13 @@
 #include <SFML/Graphics.hpp>
+#include "Game.h"
 
-const int size = 500;
+const int Size = 500;
 
 int main()
 {
-    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(size, size), "FlappyDeep2", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(Size, Size), "FlappyDeep2", sf::Style::Titlebar | sf::Style::Close);
+
+    Game g = Game(window);
 
     while (window->isOpen())
     {
@@ -16,6 +19,7 @@ int main()
         }
 
         window->clear(sf::Color::Black);
+        g.Render();
         window->display();
     }
 
