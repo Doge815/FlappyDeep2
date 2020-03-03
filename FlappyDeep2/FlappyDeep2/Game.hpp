@@ -7,7 +7,6 @@
 #include "Pipe.hpp"
 #include "Constants.hpp"
 
-using namespace sf;
 using namespace std;
 
 class Game
@@ -20,13 +19,13 @@ class Game
 
 		void SpawnPipe();
 	public:
-		Game(RenderWindow* rw);
+		Game(sf::RenderWindow* rw);
 		void Render();
 		void Update();
 		
 };
 
-Game::Game(RenderWindow* rw)
+Game::Game(sf::RenderWindow* rw)
 {
 	Container::RenderWindow = rw;
 	Container::WindowHeight = rw->getSize().y;

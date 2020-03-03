@@ -3,14 +3,12 @@
 
 #include "Container.hpp"
 
-using namespace sf;
-
 class Pipe
 {
 	private:
 		int x;
 		int y;
-		RectangleShape* rs;
+		sf::RectangleShape* rs;
 
 	public:
 		static int wight;
@@ -37,7 +35,7 @@ Pipe::Pipe(int X, int Y)
 {
 	x = X;
 	y = Y;
-	rs = new RectangleShape();
+	rs = new sf::RectangleShape();
 	rs->setSize(Vector2f(wight, height));
 	rs->setFillColor(Color::Green);
 }

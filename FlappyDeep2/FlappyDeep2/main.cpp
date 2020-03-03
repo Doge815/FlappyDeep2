@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 
-#include "Game.h"
+#include "Game.hpp"
 #include "Constants.hpp"
 
 int main()
@@ -27,3 +27,5 @@ int main()
 
     return 0;
 }
+
+//g++ -c main.cpp -o main.o && g++ main.o -o FlappyDeep2 -lsfml-graphics -lsfml-window -lsfml-system && ./FlappyDeep2

@@ -5,11 +5,11 @@ using namespace sf;
 class Container
 {
 	public:
-		static RenderWindow* RenderWindow;
+		static sf::RenderWindow* RenderWindow;
 		static int WindowHeight;
 		static int WindowWidth;
 };
 
-RenderWindow *Container::RenderWindow;
+sf::RenderWindow *Container::RenderWindow;
 int Container::WindowHeight;
 int Container::WindowWidth;
