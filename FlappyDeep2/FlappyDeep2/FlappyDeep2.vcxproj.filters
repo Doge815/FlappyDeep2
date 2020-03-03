@@ -35,5 +35,8 @@
     <ClInclude Include="Container.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

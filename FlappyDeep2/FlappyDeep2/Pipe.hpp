@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+
 #include "Container.hpp"
+
 using namespace sf;
 
 class Pipe
@@ -17,7 +19,10 @@ class Pipe
 		static int gap;
 
 		void Render();
+		void Update();
+		int GetX();
 		Pipe(int X, int Y);
+		~Pipe();
 };
 
 void Pipe::Render()
@@ -35,6 +40,21 @@ Pipe::Pipe(int X, int Y)
 	rs = new RectangleShape();
 	rs->setSize(Vector2f(wight, height));
 	rs->setFillColor(Color::Green);
+}
+
+Pipe::~Pipe()
+{
+	//Todo: Cleanup
+}
+
+void Pipe::Update()
+{
+	x -= speed;
+}
+
+int Pipe::GetX()
+{
+	return x;
 }
 
 int Pipe::wight;

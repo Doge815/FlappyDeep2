@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="Bird.hpp" />
     <ClInclude Include="BirdBrain.h" />
+    <ClInclude Include="Constants.hpp" />
     <ClInclude Include="Container.hpp" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Pipe.hpp" />
