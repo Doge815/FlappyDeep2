@@ -20,44 +20,42 @@ class Game
 
 		int PipeSpawnDuration;
 		int PipeSpawnTicker;
+		static Game* currentGame;
 
 		void SpawnPipe();
 	public:
+		vector<Bird*> Deadbirds;
 		Game(sf::RenderWindow* rw);
 		void Render();
 		void Update();
+		void ReStart();
+		static Game* GetCurrentGame();
 		
 };
 
 Game::Game(sf::RenderWindow* rw)
 {
+	currentGame = this;
+
 	Container::RenderWindow = rw;
 	Container::WindowHeight = rw->getSize().y;
 	Container::WindowWidth = rw->getSize().x;
 
-	Pipe::gap = Container::WindowHeight / 10;
+	Pipe::gap = Container::WindowHeight / 5;
 	Pipe::height = Container::WindowHeight;
-	Pipe::wight = Container::WindowWidth / 10;
+	Pipe::wight = Container::WindowWidth / 20;
 	Pipe::speed = Container::WindowWidth / 100;
 
 	Bird::x = Container::WindowWidth / 10;
 	Bird::height = Container::WindowHeight / 10;
 	Bird::wight = Container ::WindowWidth / 15;
 
-	Pipes = vector<Pipe*>();
-	DeadPipes = vector<Pipe*>();
-	ActivePipe = NULL;
-	Birds = vector<Bird*>();
-
-	PipeSpawnTicker =   0.7f * FPS - 1;
-	PipeSpawnDuration = 0.7f * FPS;
-
-	Bird* bird = new Bird();
-	Birds.push_back(bird);
+	ReStart();
 }
 
 void Game::Render()
 {
+	#if true
 	for (size_t i = 0; i < Pipes.size(); i++)
 	{
 		Pipes[i]->Render();
@@ -67,7 +65,7 @@ void Game::Render()
 	{
 		DeadPipes[i]->Render();
 	}
-	
+	#endif
 
 	for (size_t i = 0; i < Birds.size(); i++)
 	{
@@ -78,6 +76,11 @@ void Game::Render()
 
 void Game::Update()
 {
+	if(Deadbirds.size() == Birds.size())
+	{
+		ReStart();
+		return;
+	}
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
@@ -153,6 +156,12 @@ void Game::Update()
 			Birds[i]->NoCollision();
 		}
 	}
+
+	for (size_t i = 0; i < Birds.size(); i++)
+	{
+		Birds[i]->Update();
+	}
+	
 	
 }
 
@@ -162,4 +171,24 @@ void Game::SpawnPipe()
 	Pipes.push_back(newPipe);
 }
 
+void Game::ReStart()
+{
+	Pipes = vector<Pipe*>();
+	DeadPipes = vector<Pipe*>();
+	ActivePipe = NULL;
+	Birds = vector<Bird*>();
+	Deadbirds = vector<Bird*>();
 
+	PipeSpawnTicker =   0.7f * FPS - 1;
+	PipeSpawnDuration = 0.7f * FPS;
+
+	Bird* bird = new Bird();
+	Birds.push_back(bird);
+}
+
+Game* Game::GetCurrentGame()
+{
+	return currentGame;
+}
+
+Game* Game::currentGame = NULL;

@@ -8,14 +8,17 @@ class Bird
 {
     private:
         int y;
-        int Jumpheight = 0;
+        int Jumpheight;
         bool colliding;
         sf::RectangleShape* rs;
+        void Die();
     public:
         static int wight;
 		static int height;
-        static const int gravity = 3;
         static int x;
+
+        static const int gravity = 2;
+        static const int jumpPower = 25;
 
         Bird();
         ~Bird();
@@ -24,7 +27,6 @@ class Bird
         void Render();
         void NoCollision();
         void CollisionCheck(Pipe* pipe);
-        void Jump();
 };
 
 void Bird::Render()
@@ -38,6 +40,7 @@ Bird::Bird()
 {
     colliding = false;
     y = 0 - height / 2;
+    Jumpheight = 0;
     rs = new RectangleShape();
     rs->setSize(Vector2f(wight, height));
     rs->setFillColor(Color::Red);
@@ -55,7 +58,8 @@ void Bird::NoCollision()
 
 void Bird::Jump()
 {
-    Jumpheight = 10;
+    if(Jumpheight < jumpPower * 4 / 5)
+    Jumpheight = jumpPower;
 }
 
 void Bird::CollisionCheck(Pipe* pipe)
@@ -64,7 +68,19 @@ void Bird::CollisionCheck(Pipe* pipe)
     if(y + height > pipe->GetY() + pipe->gap || y < pipe->GetY() - pipe->gap)
     {
         colliding = true;
+        Die();
     }
+}
+
+void Bird::Update()
+{
+    y -= Jumpheight;
+    Jumpheight -= gravity;
+}
+
+void Bird::Die()
+{
+    Game::GetCurrentGame()->Deadbirds.push_back(this);
 }
 
 int Bird::wight;
