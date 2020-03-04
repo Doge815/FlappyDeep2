@@ -79,13 +79,9 @@ void Game::Render()
 void Game::Update()
 {
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		Birds[0]->MoveDown();
-	}
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		Birds[0]->MoveUp();
+		Birds[0]->Jump();
 	}
 
 	PipeSpawnTicker++;

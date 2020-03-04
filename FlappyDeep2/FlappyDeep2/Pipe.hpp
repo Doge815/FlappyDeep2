@@ -45,7 +45,7 @@ Pipe::Pipe(int X, int Y)
 
 Pipe::~Pipe()
 {
-	//Todo: Cleanup
+	delete rs;
 }
 
 void Pipe::Update()

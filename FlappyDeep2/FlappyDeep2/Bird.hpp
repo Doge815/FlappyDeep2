@@ -8,11 +8,13 @@ class Bird
 {
     private:
         int y;
+        int Jumpheight = 0;
         bool colliding;
         sf::RectangleShape* rs;
     public:
         static int wight;
 		static int height;
+        static const int gravity = 3;
         static int x;
 
         Bird();
@@ -22,8 +24,7 @@ class Bird
         void Render();
         void NoCollision();
         void CollisionCheck(Pipe* pipe);
-        void MoveUp();
-        void MoveDown();
+        void Jump();
 };
 
 void Bird::Render()
@@ -52,14 +53,9 @@ void Bird::NoCollision()
     colliding = false;
 }
 
-void Bird::MoveUp()
+void Bird::Jump()
 {
-    y--;
-}
-
-void Bird::MoveDown()
-{
-    y++;
+    Jumpheight = 10;
 }
 
 void Bird::CollisionCheck(Pipe* pipe)
