@@ -6,6 +6,7 @@
 #include "Container.hpp"
 #include "Pipe.hpp"
 #include "Constants.hpp"
+#include "Bird.hpp"
 
 using namespace std;
 
@@ -13,6 +14,8 @@ class Game
 {
 	private:
 		vector<Pipe*> Pipes;
+		vector<Pipe*> DeadPipes;
+		vector<Bird*> Birds;
 
 		int PipeSpawnDuration;
 		int PipeSpawnTicker;
@@ -34,12 +37,21 @@ Game::Game(sf::RenderWindow* rw)
 	Pipe::gap = Container::WindowHeight / 10;
 	Pipe::height = Container::WindowHeight;
 	Pipe::wight = Container::WindowWidth / 10;
-	Pipe::speed = 5;
+	Pipe::speed = Container::WindowWidth / 100;
+
+	Bird::x = Container::WindowWidth / 10;
+	Bird::height = Container::WindowHeight / 10;
+	Bird::wight = Container ::WindowWidth / 15;
 
 	Pipes = vector<Pipe*>();
+	DeadPipes = vector<Pipe*>();
+	Birds = vector<Bird*>();
 
-	PipeSpawnTicker = 2 * FPS - 1;
-	PipeSpawnDuration = 2 * FPS;
+	PipeSpawnTicker = 0.5f * FPS - 1;
+	PipeSpawnDuration = 0.5f * FPS;
+
+	Bird* bird = new Bird();
+	Birds.push_back(bird);
 }
 
 void Game::Render()
@@ -48,6 +60,18 @@ void Game::Render()
 	{
 		Pipes[i]->Render();
 	}
+
+	for (size_t i = 0; i < DeadPipes.size(); i++)
+	{
+		DeadPipes[i]->Render();
+	}
+	
+
+	for (size_t i = 0; i < Birds.size(); i++)
+	{
+		Birds[i]->Render();
+	}
+	
 }
 
 void Game::Update()
@@ -61,9 +85,20 @@ void Game::Update()
 	if (!Pipes.empty())
 	{
 		Pipe* LeftOne = Pipes[0];
-		if (LeftOne->GetX() + Pipe::wight < 0)
+		if (LeftOne->GetX() + Pipe::wight < Bird::x)
 		{
 			Pipes.erase(Pipes.begin());
+			DeadPipes.push_back(LeftOne);
+			LeftOne->Die();
+		}
+	}
+
+	if (!DeadPipes.empty())
+	{
+		Pipe* LeftOne = DeadPipes[0];
+		if (LeftOne->GetX() + Pipe::wight < 0)
+		{
+			DeadPipes.erase(DeadPipes.begin());
 			delete LeftOne;
 		}
 	}
@@ -71,6 +106,11 @@ void Game::Update()
 	for (size_t i = 0; i < Pipes.size(); i++)
 	{
 		Pipes[i]->Update();
+	}
+
+	for (size_t i = 0; i < DeadPipes.size(); i++)
+	{
+		DeadPipes[i]->Update();
 	}
 }
 

@@ -5,7 +5,7 @@
 
 int main()
 {
-    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(Size, Size), "FlappyDeep2", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(SizeX, SizeY), "FlappyDeep2", sf::Style::Titlebar | sf::Style::Close);
 
     Game g = Game(window);
     window->setFramerateLimit(FPS);

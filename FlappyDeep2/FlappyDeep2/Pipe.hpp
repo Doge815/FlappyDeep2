@@ -18,6 +18,8 @@ class Pipe
 
 		void Render();
 		void Update();
+		void Die();
+		void Checked();
 		int GetX();
 		Pipe(int X, int Y);
 		~Pipe();
@@ -53,6 +55,16 @@ void Pipe::Update()
 int Pipe::GetX()
 {
 	return x;
+}
+
+void Pipe::Die()
+{
+	rs->setFillColor(Color::Yellow);
+}
+
+void Pipe::Checked()
+{
+	rs->setFillColor(Color::Blue);
 }
 
 int Pipe::wight;
