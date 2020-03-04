@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <vector>
+#include<functional>
 
 #include "Container.hpp"
 #include "Pipe.hpp"
@@ -17,6 +18,7 @@ class Game
 		vector<Pipe*> DeadPipes;
 		Pipe* ActivePipe;
 		vector<Bird*> Birds;
+		vector<Bird*> Deadbirds;
 
 		int PipeSpawnDuration;
 		int PipeSpawnTicker;
@@ -24,18 +26,16 @@ class Game
 
 		void SpawnPipe();
 	public:
-		vector<Bird*> Deadbirds;
+		
 		Game(sf::RenderWindow* rw);
 		void Render();
 		void Update();
 		void ReStart();
-		static Game* GetCurrentGame();
 		
 };
 
 Game::Game(sf::RenderWindow* rw)
 {
-	currentGame = this;
 
 	Container::RenderWindow = rw;
 	Container::WindowHeight = rw->getSize().y;
@@ -76,7 +76,7 @@ void Game::Render()
 
 void Game::Update()
 {
-	if(Deadbirds.size() == Birds.size())
+	if(Birds.size() == 0)
 	{
 		ReStart();
 		return;
@@ -139,27 +139,20 @@ void Game::Update()
 				Birds[i]->CollisionCheck(ActivePipe);
 			}
 		}
-		else
-		{
-			for (size_t i = 0; i < Birds.size(); i++)
-			{
-				Birds[i]->NoCollision();
-			}
-			
-		}
-		
-	}
-	else
-	{
-		for (size_t i = 0; i < Birds.size(); i++)
-		{
-			Birds[i]->NoCollision();
-		}
 	}
 
 	for (size_t i = 0; i < Birds.size(); i++)
 	{
-		Birds[i]->Update();
+		if (Birds[i]->IsDead())
+		{
+			Bird* b = Birds[i];
+			Birds.erase(Birds.begin() + i);
+			Deadbirds.push_back(b);
+		}
+		else
+		{
+			Birds[i]->Update();
+		}
 	}
 	
 	
@@ -173,6 +166,21 @@ void Game::SpawnPipe()
 
 void Game::ReStart()
 {
+	for (size_t i = 0; i < Pipes.size(); i++)
+	{
+		delete Pipes[i];
+	}
+
+	for (size_t i = 0; i < DeadPipes.size(); i++)
+	{
+		delete DeadPipes[i];
+	}
+
+	for (size_t i = 0; i < Deadbirds.size(); i++)
+	{
+		delete Deadbirds[i];
+	}
+
 	Pipes = vector<Pipe*>();
 	DeadPipes = vector<Pipe*>();
 	ActivePipe = NULL;
@@ -186,9 +194,4 @@ void Game::ReStart()
 	Birds.push_back(bird);
 }
 
-Game* Game::GetCurrentGame()
-{
-	return currentGame;
-}
 
-Game* Game::currentGame = NULL;

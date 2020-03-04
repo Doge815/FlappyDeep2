@@ -26,16 +26,16 @@
     <ClInclude Include="Bird.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BirdBrain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Container.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Constants.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BirdBrain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
