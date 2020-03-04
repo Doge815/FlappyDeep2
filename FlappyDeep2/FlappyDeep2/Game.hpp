@@ -15,6 +15,7 @@ class Game
 	private:
 		vector<Pipe*> Pipes;
 		vector<Pipe*> DeadPipes;
+		Pipe* ActivePipe;
 		vector<Bird*> Birds;
 
 		int PipeSpawnDuration;
@@ -45,10 +46,11 @@ Game::Game(sf::RenderWindow* rw)
 
 	Pipes = vector<Pipe*>();
 	DeadPipes = vector<Pipe*>();
+	ActivePipe = NULL;
 	Birds = vector<Bird*>();
 
-	PipeSpawnTicker = 0.5f * FPS - 1;
-	PipeSpawnDuration = 0.5f * FPS;
+	PipeSpawnTicker =   3 * FPS - 1;
+	PipeSpawnDuration = 3 * FPS;
 
 	Bird* bird = new Bird();
 	Birds.push_back(bird);
@@ -82,16 +84,6 @@ void Game::Update()
 		PipeSpawnTicker = 0;
 		Game::SpawnPipe();
 	}
-	if (!Pipes.empty())
-	{
-		Pipe* LeftOne = Pipes[0];
-		if (LeftOne->GetX() + Pipe::wight < Bird::x)
-		{
-			Pipes.erase(Pipes.begin());
-			DeadPipes.push_back(LeftOne);
-			LeftOne->Die();
-		}
-	}
 
 	if (!DeadPipes.empty())
 	{
@@ -112,6 +104,50 @@ void Game::Update()
 	{
 		DeadPipes[i]->Update();
 	}
+
+	if (!Pipes.empty())
+	{
+		if(ActivePipe == NULL)
+		{
+			ActivePipe = Pipes[0];
+			ActivePipe->Checked();
+		}
+		if (ActivePipe->GetX() + Pipe::wight < Bird::x)
+		{
+			Pipes.erase(Pipes.begin());
+			DeadPipes.push_back(ActivePipe);
+			ActivePipe->Die();
+			ActivePipe = NULL;
+		}
+	}
+
+	if(ActivePipe != NULL)
+	{
+		if(Bird::wight + Bird::x > ActivePipe->GetX())
+		{
+			for (size_t i = 0; i < Birds.size(); i++)
+			{
+				Birds[i]->CollisionCheck(ActivePipe);
+			}
+		}
+		else
+		{
+			for (size_t i = 0; i < Birds.size(); i++)
+			{
+				Birds[i]->NoCollision();
+			}
+			
+		}
+		
+	}
+	else
+	{
+		for (size_t i = 0; i < Birds.size(); i++)
+		{
+			Birds[i]->NoCollision();
+		}
+	}
+	
 }
 
 void Game::SpawnPipe()
