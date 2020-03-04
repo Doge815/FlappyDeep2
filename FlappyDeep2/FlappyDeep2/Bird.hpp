@@ -22,11 +22,13 @@ class Bird
         void Render();
         void NoCollision();
         void CollisionCheck(Pipe* pipe);
+        void MoveUp();
+        void MoveDown();
 };
 
 void Bird::Render()
 {
-    rs->setPosition(x, y);
+    rs->setPosition(x, y + Container::WindowHeight / 2);
     rs->setFillColor(colliding ? Color::Red : Color::White);
     Container::RenderWindow->draw(*rs);
 }
@@ -34,11 +36,11 @@ void Bird::Render()
 Bird::Bird()
 {
     colliding = false;
-    y = (Container::WindowHeight - height) / 2;
+    y = 0 - height / 2;
     rs = new RectangleShape();
     rs->setSize(Vector2f(wight, height));
     rs->setFillColor(Color::Red);
-}
+} 
 
 Bird::~Bird()
 {
@@ -50,9 +52,23 @@ void Bird::NoCollision()
     colliding = false;
 }
 
+void Bird::MoveUp()
+{
+    y--;
+}
+
+void Bird::MoveDown()
+{
+    y++;
+}
+
 void Bird::CollisionCheck(Pipe* pipe)
 {
-    colliding = true;
+    colliding = false;
+    if(y + height > pipe->GetY() + pipe->gap || y < pipe->GetY() - pipe->gap)
+    {
+        colliding = true;
+    }
 }
 
 int Bird::wight;

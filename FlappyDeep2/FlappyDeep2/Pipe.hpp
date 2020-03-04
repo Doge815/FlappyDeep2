@@ -21,6 +21,7 @@ class Pipe
 		void Die();
 		void Checked();
 		int GetX();
+		int GetY();
 		Pipe(int X, int Y);
 		~Pipe();
 };
@@ -55,6 +56,11 @@ void Pipe::Update()
 int Pipe::GetX()
 {
 	return x;
+}
+
+int Pipe::GetY()
+{
+	return y;
 }
 
 void Pipe::Die()

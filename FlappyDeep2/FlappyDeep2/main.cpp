@@ -14,11 +14,12 @@ int main()
     {
         sf::Event event;
         while (window->pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window->close();
-        }
+    {
+        if (event.type == sf::Event::Closed)
+            window->close();
 
+		
+    }
         window->clear(sf::Color::Black);
         g.Update();
         g.Render();

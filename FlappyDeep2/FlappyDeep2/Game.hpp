@@ -49,8 +49,8 @@ Game::Game(sf::RenderWindow* rw)
 	ActivePipe = NULL;
 	Birds = vector<Bird*>();
 
-	PipeSpawnTicker =   3 * FPS - 1;
-	PipeSpawnDuration = 3 * FPS;
+	PipeSpawnTicker =   0.7f * FPS - 1;
+	PipeSpawnDuration = 0.7f * FPS;
 
 	Bird* bird = new Bird();
 	Birds.push_back(bird);
@@ -78,6 +78,16 @@ void Game::Render()
 
 void Game::Update()
 {
+
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		Birds[0]->MoveDown();
+	}
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		Birds[0]->MoveUp();
+	}
+
 	PipeSpawnTicker++;
 	if (PipeSpawnTicker == PipeSpawnDuration)
 	{
