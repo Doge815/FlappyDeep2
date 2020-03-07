@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\NeuralNetwork">
+      <UniqueIdentifier>{0f22141d-7a99-41ed-a336-6a3225dd2ba9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\NeuralNetwork\BackPropagateNetwork">
+      <UniqueIdentifier>{65a92962-46b6-4a15-ab29-43e4025fe145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{aa58ad82-292c-4da2-b65e-e5ba2b2c651a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -20,23 +29,38 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Pipe.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="NeuralNetwork\NetworkShape.hpp">
+      <Filter>Header Files\NeuralNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralNetwork\INetwork.hpp">
+      <Filter>Header Files\NeuralNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralNetwork\NeuralNetworkCollection.hpp">
+      <Filter>Header Files\NeuralNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralNetwork\BackPropagateNetwork\BackPropagateNetwork.hpp">
+      <Filter>Header Files\NeuralNetwork\BackPropagateNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralNetwork\BackPropagateNetwork\BackPropagateNetworkCollection.hpp">
+      <Filter>Header Files\NeuralNetwork\BackPropagateNetwork</Filter>
     </ClInclude>
     <ClInclude Include="Bird.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Container.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="BirdBrain.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.hpp">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Container.hpp">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="Game.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipe.hpp">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

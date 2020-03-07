@@ -155,6 +155,7 @@
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="Container.hpp" />
     <ClInclude Include="Game.hpp" />
+    <ClInclude Include="NeuralNetwork\INetwork.hpp" />
     <ClInclude Include="Pipe.hpp" />
     <ClInclude Include="NeuralNetwork\NeuralNetworkCollection.hpp" />
     <Content Include="NeuralNetwork\INetwork.hpp" />
