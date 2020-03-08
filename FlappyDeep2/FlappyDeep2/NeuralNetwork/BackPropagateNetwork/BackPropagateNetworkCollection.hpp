@@ -11,7 +11,7 @@ using namespace std;
 
 class BackPropagateNetworkCollection : NeuralNetworkCollection
 {
-    BackPropagateNetwork* nets;
+    vector<BackPropagateNetwork*> nets;
     int amountOfNetworks;
     public:
         BackPropagateNetworkCollection(int amount, NetworkShape shape);
@@ -21,10 +21,10 @@ class BackPropagateNetworkCollection : NeuralNetworkCollection
 
 BackPropagateNetworkCollection::BackPropagateNetworkCollection(int amount, NetworkShape shape)
 {
-    nets = (BackPropagateNetwork*)malloc(sizeof(amount));
+    nets = vector<BackPropagateNetwork*>();
     for(int i = 0; i < amount; i++)
     {
-        nets[i] = BackPropagateNetwork(shape);
+        nets.push_back(new BackPropagateNetwork(shape));
     }
 }
 
@@ -32,7 +32,12 @@ void BackPropagateNetworkCollection::Evolve()
 {
     for (size_t i = 0; i < amountOfNetworks; i++)
     {
-        nets[i].Learn();
+        nets[i]->Learn();
     }
     
+}
+
+vector<INetwork*> BackPropagateNetworkCollection::GetNetworks()
+{
+    return vector<INetwork*>();
 }
