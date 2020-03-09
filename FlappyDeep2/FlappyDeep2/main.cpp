@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 
-#include "Game.hpp"
-#include "Constants.hpp"
+#include "Game/Game.hpp"
+#include "Game/Constants.hpp"
 
 int main()
 {

@@ -1,11 +1,14 @@
 #pragma once
 
+#include <vector>
+
+using namespace std;
+
 class INetwork
 {
     public:
-        virtual void Inputs(double* values);
-        virtual double* Outputs();
+        virtual vector<double> Calculate(vector<double> values);
 
-        virtual void SetFitness(double* values);
-        virtual double* GetValues();
+        virtual void SetFitness(vector<double> values);
+        virtual vector<double> GetValues();
 };

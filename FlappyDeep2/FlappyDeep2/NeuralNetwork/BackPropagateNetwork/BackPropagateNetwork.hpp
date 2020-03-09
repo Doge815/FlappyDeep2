@@ -1,88 +1,63 @@
 #pragma once
 
-#define step 0.01
-
 #include "../INetwork.hpp"
 #include "../NetworkShape.hpp"
+#include "BackPropagateNetworkLayer.hpp"
 
 #include <vector>
 
 using namespace std;
 
-enum LayerType {Hidden, Input, Output};
-
 class BackPropagateNetwork : INetwork
 {
     private:
-      BackPropagateLayer* Layers;
+        vector<BackPropagateNetworkLayer> Layers;
+        vector<double> Fitness;
 
     public:
         BackPropagateNetwork(NetworkShape shape);
-        void Inputs(double* values);
-        double* Outputs();
 
-        void SetFitness(double* values);
-        double* GetValues();
+        vector<double> Calculate(vector<double> values);
+
+        void SetFitness(vector<double> values);
 
         void Learn();
 };
 
-class BackPropagateLayer
+BackPropagateNetwork::BackPropagateNetwork(NetworkShape shape)
 {
-    private:
-        BackPropagateNetwork network;
+    Layers = vector<BackPropagateNetworkLayer>();
+    for (size_t i = 0; i < shape.GetSize().size(); i++)
+    {
+        Layers.push_back(BackPropagateNetworkLayer());
+    }
 
-        vector<vector<double>> Factors;
-        LayerType type;
+    for (size_t i = 0; i < Layers.size()-1; i++)
+    {
+        Layers[i].TargetLayer = &Layers[i+1];
+        Layers[i].type = LayerType::Hidden;
+    }
+
+    Layers[0].type = LayerType::Input;
+    Layers[Layers.size() - 1].type = LayerType::Output;
     
-    public:
-        BackPropagateLayer* TargetLayer;
-        vector<double> Values;
-        void ForwardPropagate();
-        void BackPropagate();
+    
+}
 
-        double Activate(double value);
-        double Deactivate(double value);
-};
-
-void BackPropagateLayer::ForwardPropagate()
+vector<double> BackPropagateNetwork::Calculate(vector<double> values)
 {
-    for (int i = 0; i < Factors.size(); i++)
+    return Layers[0].ForwardPropagate(values);
+}
+
+void BackPropagateNetwork::SetFitness(vector<double> values)
+{
+    Fitness = values;
+}
+
+void BackPropagateNetwork::Learn()
+{
+    for (int i = Layers.size() - 2; i >= 0; i--)
     {
-        double accumulator = 0;
-
-        for (int j = 0; j < Factors[0].size(); j++)
-        {
-            accumulator += Values[j] * Factors[j][i];
-        }
-
-        TargetLayer->Values[i] = Activate(accumulator);
+        Layers[i].BackPropagate();
     }
-}
-
-void BackPropagateLayer::BackPropagate()
-{
-    for (int i = 0; i < Factors.size(); i++)
-    {
-        double accumulator = 0;
-
-        for (int j = 0; j < Factors[0].size(); j++)
-        {
-            double value = Deactivate(TargetLayer->Values[j] * Factors[i][j]);
-            accumulator += value;
-            Factors[i][j] += value * step;
-        }
-
-        Values[i] = accumulator;
-    }
-}
-
-inline double BackPropagateLayer::Activate(double value)
-{
-    return 0.0;
-}
-
-inline double BackPropagateLayer::Deactivate(double value)
-{
-    return 0.0;
 }
