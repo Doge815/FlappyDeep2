@@ -154,7 +154,6 @@
     <ClInclude Include="BirdBrain.hpp" />
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="Container.hpp" />
-    <ClInclude Include="Game.hpp" />
     <ClInclude Include="NeuralNetwork\INetwork.hpp" />
     <ClInclude Include="Pipe.hpp" />
     <ClInclude Include="NeuralNetwork\NeuralNetworkCollection.hpp" />
@@ -162,6 +161,7 @@
     <ClInclude Include="NeuralNetwork\NetworkShape.hpp" />
     <ClInclude Include="NeuralNetwork\BackPropagateNetwork\BackPropagateNetwork.hpp" />
     <ClInclude Include="NeuralNetwork\BackPropagateNetwork\BackPropagateNetworkCollection.hpp" />
+    <Folder Include="Game\" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

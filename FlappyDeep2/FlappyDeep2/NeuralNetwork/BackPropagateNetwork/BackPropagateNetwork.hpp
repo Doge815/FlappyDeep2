@@ -27,20 +27,15 @@ class BackPropagateNetwork : INetwork
 BackPropagateNetwork::BackPropagateNetwork(NetworkShape shape)
 {
     Layers = vector<BackPropagateNetworkLayer>();
-    for (size_t i = 0; i < shape.GetSize().size(); i++)
-    {
-        Layers.push_back(BackPropagateNetworkLayer());
-    }
-
-    for (size_t i = 0; i < Layers.size()-1; i++)
-    {
-        Layers[i].TargetLayer = &Layers[i+1];
-        Layers[i].type = LayerType::Hidden;
-    }
-
-    Layers[0].type = LayerType::Input;
-    Layers[Layers.size() - 1].type = LayerType::Output;
     
+    Layers.push_back(BackPropagateNetworkLayer(LayerType::Input, shape.GetSize()[0], 0));
+
+    for (size_t i = 1; i < shape.GetSize().size() - 1; i++)
+    {
+        Layers.push_back(BackPropagateNetworkLayer(LayerType::Hidden, shape.GetSize()[i], shape.GetSize()[i-1]));
+    }
+
+    Layers.push_back(BackPropagateNetworkLayer(LayerType::Output, shape.GetSize()[shape.GetSize().size()-1], shape.GetSize()[shape.GetSize().size()-2]));
     
 }
 
@@ -56,8 +51,9 @@ void BackPropagateNetwork::SetFitness(vector<double> values)
 
 void BackPropagateNetwork::Learn()
 {
+    vector<double> val = Fitness;
     for (int i = Layers.size() - 2; i >= 0; i--)
     {
-        Layers[i].BackPropagate();
+        val = Layers[i].BackPropagate(val);
     }
 }
