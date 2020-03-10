@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class BackPropagateNetwork : INetwork
+class BackPropagateNetwork : public INetwork
 {
     private:
         vector<BackPropagateNetworkLayer> Layers;

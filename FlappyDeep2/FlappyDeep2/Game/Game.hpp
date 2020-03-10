@@ -9,11 +9,18 @@
 #include "Constants.hpp"
 #include "Bird.hpp"
 
+#include "../NeuralNetwork/NetworkShape.hpp"
+#include "../NeuralNetwork/INetwork.hpp"
+#include "../NeuralNetwork/NeuralNetworkCollection.hpp"
+#include "../NeuralNetwork/BackPropagateNetwork/BackPropagateNetworkCollection.hpp"
+
 using namespace std;
 
 class Game
 {
 	private:
+		NeuralNetworkCollection NetworkCollection;
+
 		vector<Pipe*> Pipes;
 		vector<Pipe*> DeadPipes;
 		Pipe* ActivePipe;
@@ -22,7 +29,6 @@ class Game
 
 		int PipeSpawnDuration;
 		int PipeSpawnTicker;
-		static Game* currentGame;
 
 		void SpawnPipe();
 	public:
@@ -36,6 +42,9 @@ class Game
 
 Game::Game(sf::RenderWindow* rw)
 {
+	vector<int> size = vector<int>();
+	NetworkShape shape = NetworkShape(size);
+	NetworkCollection = BackPropagateNetworkCollection(1, shape);
 
 	Container::RenderWindow = rw;
 	Container::WindowHeight = rw->getSize().y;
@@ -189,6 +198,8 @@ void Game::ReStart()
 
 	PipeSpawnTicker =   0.7f * FPS - 1;
 	PipeSpawnDuration = 0.7f * FPS;
+
+	NetworkCollection.Evolve();
 
 	Bird* bird = new Bird();
 	Birds.push_back(bird);

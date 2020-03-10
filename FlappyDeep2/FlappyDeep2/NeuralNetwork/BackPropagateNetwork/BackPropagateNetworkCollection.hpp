@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class BackPropagateNetworkCollection : NeuralNetworkCollection
+class BackPropagateNetworkCollection : public NeuralNetworkCollection
 {
     vector<BackPropagateNetwork*> nets;
     int amountOfNetworks;
