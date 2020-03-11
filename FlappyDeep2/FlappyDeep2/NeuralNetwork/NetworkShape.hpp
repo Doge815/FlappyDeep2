@@ -23,3 +23,8 @@ NetworkShape::NetworkShape(vector<int> s)
     }
     Size = s;
 }
+
+vector<int> NetworkShape::GetSize()
+{
+    return Size;
+}

@@ -14,131 +14,87 @@ class BackPropagateNetworkLayer
 {
     private:
 
-        vector<vector<double>> Factors;
-        vector<double> Input;
-        vector<double> Sum;
-        vector<double> Output;
-        LayerType type;
+        vector<vector<double>> Weights;
     
     public:
-        BackPropagateNetworkLayer* TargetLayer;
-        BackPropagateNetworkLayer* InputLayer;
 
-        BackPropagateNetworkLayer(LayerType t, int size, int j);
-        vector<double> ForwardPropagate(vector<double> val);
-        vector<double> BackPropagate(vector<double> val);
+        int InputSize;
+        int OutputSize;
+
+        BackPropagateNetworkLayer(int inputSize, int outputSize);
+        vector<double> Evaluate(vector<double> val);
+        vector<double> Train(vector<double> errorSignal, vector<double> Iout, vector<double> Oin);
 
         vector<double> Activate(vector<double> value);
-        vector<double> Deactivate(vector<double> value);
+        vector<double> ActivationDerivative(vector<double> value);
+        vector<double> ActivationInverse(vector<double> value);
 };
 
-BackPropagateNetworkLayer::BackPropagateNetworkLayer(LayerType t, int size, int j)
+BackPropagateNetworkLayer::BackPropagateNetworkLayer(int inputSize, int outputSize)
 {
-    type = t;
+    InputSize = inputSize;
+    OutputSize = outputSize;
 
-    Factors = vector<vector<double>>();
-    for (size_t i = 0; i < size; i++)
+    Weights = vector<vector<double>>();
+    for (size_t i = 0; i < outputSize; i++)
     {
-        Factors.push_back(vector<double>());
-        if(t == LayerType::Input)
+        Weights.push_back(vector<double>());
+        for (size_t j = 0; j < inputSize; j++)
         {
-            Factors[i].push_back(1);
-        }
-        else
-        {
-            for (size_t u = 0; u < j; u++)
-            {
-                Factors[i].push_back((double) rand() / (RAND_MAX)*2-1);
-            }
+            Weights[i].push_back((((double)rand()) / RAND_MAX) * 2 - 1);
         }
     }
-    
 }
 
-vector<double> BackPropagateNetworkLayer::ForwardPropagate(vector<double> val)
+vector<double> BackPropagateNetworkLayer::Evaluate(vector<double> val)
 {
-    Input = val;
-    Sum = vector<double>();
+    vector<double> output = vector<double>();
 
-    for (int i = 0; i < Input.size(); i++)
+    for (int i = 0; i < OutputSize; i++)
     {
         double accumulator = 0;
 
-        for (int j = 0; j < Factors[i].size(); j++)
+        for (int j = 0; j < InputSize; j++)
         {
-            accumulator += val[j] * Factors[j][i];
+            accumulator += val[j] * Weights[j][i];
         }
 
-        Sum.push_back(accumulator);
+        output.push_back(accumulator);
     }
 
-    Output = Activate(Sum);
-
-    if(type == LayerType::Output) return Output;
-    return TargetLayer->ForwardPropagate(Output);
+    return Activate(output);
 }
 
-vector<double> BackPropagateNetworkLayer::BackPropagate(vector<double> y)
+vector<double> BackPropagateNetworkLayer::Train(vector<double> errorSignal, vector<double> Iout, vector<double> Oin)
 {
     //Todo: size check
-    double error = 0;
-    for(int i = 0; i < y.size(); i++)
+    vector<double> dEdOout = errorSignal;
+    vector<double> dOoutdOin = ActivationDerivative(Oin);
+    vector<double> dOindW = Iout;
+
+    for (size_t i = 0; i < InputSize; i++)
     {
-        error -= y[i]*std::log10(Output[i]) + (1 - y[i] * std::log10(1 - Output[i]));
-    }
-
-    vector<double> dEdOout = vector<double>();
-    for(int i = 0; i < Output.size(); i++)
-    {
-        dEdOout.push_back(-1 * (( y[i] * (1 / Output[i]) + (1 - y[i]) * (1/(1- Output[i])))) ); //todo: Check me
-    }
-
-    vector<double> dOoutdOin = vector<double>();
-
-    double s = 0;
-
-    for(int i = 0; i < Output.size(); i++)
-    {
-        s += exp(Input[i]);
-    }
-
-    s = std::pow(s, 2);
-
-    for(int i = 0; i < Output.size(); i++)
-    {
-        double f = 0;
-        for (size_t u = 0; u < Output.size(); i++)
+        for (size_t j = 0; j < OutputSize; j++)
         {
-            if(i != u)
-            {
-                f += exp(Input[u]);
-            }
+            double errorGradient = dEdOout[j] * dOoutdOin[j] * dOindW[i];
+            Weights[j][i] -= step * errorGradient;
         }
-        f *= exp(Input[i]);
-         
-        dOoutdOin.push_back( f / s );
     }
 
-    vector<double> dOindW = vector<double>();
-
-    for (size_t i = 0; i < InputLayer->Output.size(); i++)
+    vector<double> dEdIout = vector<double>();
+    for (size_t i = 0; i < InputSize; i++)
     {
-        dOindW.push_back(InputLayer->Output[i]);
-    }
+        double accumulator = 0;
 
-    vector<vector<double>> dW = vector<vector<double>>();
-    {
-        dW.push_back(vector<double>());
-        for (size_t i = 0; i < Factors.size(); i++)
+        for (size_t j = 0; j < OutputSize; j++)
         {
-            for (size_t u = 0; u < Factors[i].size(); u++)
-            {
-                dW[i].push_back(dOindW[u] * dOoutdOin[i] * dEdOout[i]);
-                Factors[i][u] -= step * dW[i][u];
-            }
+            accumulator += dEdOout[j] * dOoutdOin[j] * Weights[j][i];
         }
+
+        dEdIout.push_back(accumulator);
     }
     
+    return dEdIout;
 }
 
 vector<double> BackPropagateNetworkLayer::Activate(vector<double> value)
@@ -151,12 +107,22 @@ vector<double> BackPropagateNetworkLayer::Activate(vector<double> value)
     return output;
 }
 
-vector<double> BackPropagateNetworkLayer::Deactivate(vector<double> value)
+vector<double> BackPropagateNetworkLayer::ActivationDerivative(vector<double> value)
 {
     vector<double> output = vector<double>();
     for(int i = 0; i < value.size(); i++)
     {
         output.push_back(value[i] > 0 ? 1 : 0);
+    }
+    return output;
+}
+
+vector<double> BackPropagateNetworkLayer::ActivationInverse(vector<double> value)
+{
+    vector<double> output = vector<double>();
+    for(int i = 0; i < value.size(); i++)
+    {
+        output.push_back(value[i]);
     }
     return output;
 }

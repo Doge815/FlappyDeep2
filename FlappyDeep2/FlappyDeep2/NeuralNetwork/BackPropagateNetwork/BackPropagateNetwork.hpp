@@ -5,55 +5,71 @@
 #include "BackPropagateNetworkLayer.hpp"
 
 #include <vector>
+#include <math.h>
 
 using namespace std;
 
 class BackPropagateNetwork : public INetwork
 {
     private:
+
         vector<BackPropagateNetworkLayer> Layers;
-        vector<double> Fitness;
 
     public:
+
         BackPropagateNetwork(NetworkShape shape);
 
-        vector<double> Calculate(vector<double> values);
-
-        void SetFitness(vector<double> values);
-
-        void Learn();
+        vector<double> Evaluate(vector<double> input);
+        double Learn(vector<double> input, vector<double> expected);
 };
 
 BackPropagateNetwork::BackPropagateNetwork(NetworkShape shape)
 {
     Layers = vector<BackPropagateNetworkLayer>();
     
-    Layers.push_back(BackPropagateNetworkLayer(LayerType::Input, shape.GetSize()[0], 0));
-
-    for (size_t i = 1; i < shape.GetSize().size() - 1; i++)
+    for (size_t i = 0; i < shape.GetSize().size() - 1; i++)
     {
-        Layers.push_back(BackPropagateNetworkLayer(LayerType::Hidden, shape.GetSize()[i], shape.GetSize()[i-1]));
+        Layers.push_back(BackPropagateNetworkLayer(shape.GetSize()[i], shape.GetSize()[i+1]));
+    }
+}
+
+vector<double> BackPropagateNetwork::Evaluate(vector<double> input)
+{
+    vector<double> current = input;
+
+    for (size_t i = 0; i < Layers.size(); i++)
+    {
+        current = Layers[i].Evaluate(current);
     }
 
-    Layers.push_back(BackPropagateNetworkLayer(LayerType::Output, shape.GetSize()[shape.GetSize().size()-1], shape.GetSize()[shape.GetSize().size()-2]));
+    return current;
+}
+
+double BackPropagateNetwork::Learn(vector<double> input, vector<double> expected)
+{
+    vector<vector<double>> Iout = vector<vector<double>>();
+    Iout.push_back(input);
+    for (size_t i = 0; i < Layers.size() ; i++)
+    {
+        Iout.push_back(Layers[i].Evaluate(Iout[i]));
+    }
+
+    vector<double> errorSignal = vector<double>();
+    double error = 0;
+
+    for (size_t i = 0; i < input.size(); i++)
+    {
+        double absoluteError = expected[i] - input[i];
+        error += absoluteError * absoluteError;
+        errorSignal.push_back(absoluteError);
+    }
+
+    error /= input.size();
     
-}
-
-vector<double> BackPropagateNetwork::Calculate(vector<double> values)
-{
-    return Layers[0].ForwardPropagate(values);
-}
-
-void BackPropagateNetwork::SetFitness(vector<double> values)
-{
-    Fitness = values;
-}
-
-void BackPropagateNetwork::Learn()
-{
-    vector<double> val = Fitness;
-    for (int i = Layers.size() - 2; i >= 0; i--)
+    for (int i = Layers.size() - 1; i >= 0; i--)
     {
-        val = Layers[i].BackPropagate(val);
+        errorSignal = Layers[i].Train(errorSignal, Iout[i], Layers[i].ActivationInverse(Iout[i+1]));
     }
+
+    return error;
 }

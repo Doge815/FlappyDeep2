@@ -30,10 +30,6 @@ BackPropagateNetworkCollection::BackPropagateNetworkCollection(int amount, Netwo
 
 void BackPropagateNetworkCollection::Evolve()
 {
-    for (size_t i = 0; i < amountOfNetworks; i++)
-    {
-        nets[i]->Learn();
-    }
     
 }
 
