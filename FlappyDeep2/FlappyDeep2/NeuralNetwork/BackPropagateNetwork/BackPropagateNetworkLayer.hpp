@@ -118,6 +118,27 @@ vector<double> BackPropagateNetworkLayer::BackPropagate(vector<double> y)
          
         dOoutdOin.push_back( f / s );
     }
+
+    vector<double> dOindW = vector<double>();
+
+    for (size_t i = 0; i < InputLayer->Output.size(); i++)
+    {
+        dOindW.push_back(InputLayer->Output[i]);
+    }
+
+    vector<vector<double>> dW = vector<vector<double>>();
+    {
+        dW.push_back(vector<double>());
+        for (size_t i = 0; i < Factors.size(); i++)
+        {
+            for (size_t u = 0; u < Factors[i].size(); u++)
+            {
+                dW[i].push_back(dOindW[u] * dOoutdOin[i] * dEdOout[i]);
+                Factors[i][u] -= step * dW[i][u];
+            }
+        }
+    }
+    
 }
 
 vector<double> BackPropagateNetworkLayer::Activate(vector<double> value)
