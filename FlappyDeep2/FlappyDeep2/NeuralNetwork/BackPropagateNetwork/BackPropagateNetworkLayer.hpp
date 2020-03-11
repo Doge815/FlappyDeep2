@@ -15,17 +15,21 @@ class BackPropagateNetworkLayer
     private:
 
         vector<vector<double>> Factors;
+        vector<double> Input;
+        vector<double> Sum;
+        vector<double> Output;
         LayerType type;
     
     public:
         BackPropagateNetworkLayer* TargetLayer;
+        BackPropagateNetworkLayer* InputLayer;
 
         BackPropagateNetworkLayer(LayerType t, int size, int j);
         vector<double> ForwardPropagate(vector<double> val);
         vector<double> BackPropagate(vector<double> val);
 
-        double Activate(double value);
-        double Deactivate(double value);
+        vector<double> Activate(vector<double> value);
+        vector<double> Deactivate(vector<double> value);
 };
 
 BackPropagateNetworkLayer::BackPropagateNetworkLayer(LayerType t, int size, int j)
@@ -53,48 +57,85 @@ BackPropagateNetworkLayer::BackPropagateNetworkLayer(LayerType t, int size, int 
 
 vector<double> BackPropagateNetworkLayer::ForwardPropagate(vector<double> val)
 {
-    vector<double> v = vector<double>();
-    for (int i = 0; i < Factors.size(); i++)
+    Input = val;
+    Sum = vector<double>();
+
+    for (int i = 0; i < Input.size(); i++)
     {
         double accumulator = 0;
 
-        for (int j = 0; j < Factors[0].size(); j++)
+        for (int j = 0; j < Factors[i].size(); j++)
         {
             accumulator += val[j] * Factors[j][i];
         }
 
-        v.push_back(accumulator);
+        Sum.push_back(accumulator);
     }
-    if(type == LayerType::Output) return v;
-    return TargetLayer->ForwardPropagate(v);
+
+    Output = Activate(Sum);
+
+    if(type == LayerType::Output) return Output;
+    return TargetLayer->ForwardPropagate(Output);
 }
 
-vector<double> BackPropagateNetworkLayer::BackPropagate(vector<double> val)
+vector<double> BackPropagateNetworkLayer::BackPropagate(vector<double> y)
 {
-    vector<double> v = vector<double>();
-    for (int i = 0; i < Factors.size(); i++)
+    //Todo: size check
+    double error = 0;
+    for(int i = 0; i < y.size(); i++)
     {
-        double accumulator = 0;
-
-        for (int j = 0; j < Factors[0].size(); j++)
-        {
-            double value = Deactivate(val[j] * Factors[i][j]);
-            accumulator += value;
-            Factors[i][j] += value * step;
-        }
-
-        v[i] = accumulator;
-        v.push_back(accumulator);
+        error -= y[i]*std::log10(Output[i]) + (1 - y[i] * std::log10(1 - Output[i]));
     }
-    return v;
+
+    vector<double> dEdOout = vector<double>();
+    for(int i = 0; i < Output.size(); i++)
+    {
+        dEdOout.push_back(-1 * (( y[i] * (1 / Output[i]) + (1 - y[i]) * (1/(1- Output[i])))) ); //todo: Check me
+    }
+
+    vector<double> dOoutdOin = vector<double>();
+
+    double s = 0;
+
+    for(int i = 0; i < Output.size(); i++)
+    {
+        s += exp(Input[i]);
+    }
+
+    s = std::pow(s, 2);
+
+    for(int i = 0; i < Output.size(); i++)
+    {
+        double f = 0;
+        for (size_t u = 0; u < Output.size(); i++)
+        {
+            if(i != u)
+            {
+                f += exp(Input[u]);
+            }
+        }
+        f *= exp(Input[i]);
+         
+        dOoutdOin.push_back( f / s );
+    }
 }
 
-inline double BackPropagateNetworkLayer::Activate(double value)
+vector<double> BackPropagateNetworkLayer::Activate(vector<double> value)
 {
-    return fmaxf64(0, value);
+    vector<double> output = vector<double>();
+    for(int i = 0; i < value.size(); i++)
+    {
+        output.push_back(fmaxf64(0, value[i]));
+    }
+    return output;
 }
 
-inline double BackPropagateNetworkLayer::Deactivate(double value)
+vector<double> BackPropagateNetworkLayer::Deactivate(vector<double> value)
 {
-    return fminf64(0, value);
+    vector<double> output = vector<double>();
+    for(int i = 0; i < value.size(); i++)
+    {
+        output.push_back(value[i] > 0 ? 1 : 0);
+    }
+    return output;
 }
