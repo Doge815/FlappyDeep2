@@ -15,7 +15,7 @@ class BackPropagateNetworkCollection : public NeuralNetworkCollection
     int amountOfNetworks;
     public:
         BackPropagateNetworkCollection(int amount, NetworkShape shape);
-        vector<INetwork*> GetNetworks();
+        vector<INetwork*> GetNetworks() override;
         void Evolve();
 };
 

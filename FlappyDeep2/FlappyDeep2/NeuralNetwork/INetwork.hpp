@@ -7,5 +7,5 @@ using namespace std;
 class INetwork
 {
     public:
-        virtual vector<double> Evaluate(vector<double> values);
+        virtual vector<double> Evaluate(vector<double> values) { return vector<double>();};
 };

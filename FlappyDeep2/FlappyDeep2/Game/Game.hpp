@@ -199,7 +199,7 @@ void Game::ReStart()
 	PipeSpawnTicker =   0.7f * FPS - 1;
 	PipeSpawnDuration = 0.7f * FPS;
 
-	NetworkCollection.Evolve();
+	//NetworkCollection.Evolve();
 
 	Bird* bird = new Bird();
 	Birds.push_back(bird);

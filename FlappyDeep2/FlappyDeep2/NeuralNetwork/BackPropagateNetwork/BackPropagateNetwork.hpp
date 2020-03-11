@@ -19,7 +19,7 @@ class BackPropagateNetwork : public INetwork
 
         BackPropagateNetwork(NetworkShape shape);
 
-        vector<double> Evaluate(vector<double> input);
+        vector<double> Evaluate(vector<double> input) override;
         double Learn(vector<double> input, vector<double> expected);
 };
 
